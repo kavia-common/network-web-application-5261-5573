@@ -59,6 +59,15 @@ export function deleteDeviceApi(id) {
 
 /**
  * PUBLIC_INTERFACE
+ * getStatuses
+ * GET /status to retrieve status list for devices
+ */
+export function getStatuses() {
+  return apiFetch(`/status`, { method: "GET" });
+}
+
+/**
+ * PUBLIC_INTERFACE
  * pingDevice
  * POST /ping
  */

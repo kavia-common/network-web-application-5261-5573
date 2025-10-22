@@ -5,7 +5,7 @@ React application for managing network devices. It communicates with the backend
 ## Quick Start
 
 1. Install dependencies
-   - In this template we use Create React App (CRA). From this folder:
+   - This project uses Create React App (CRA). From this folder:
      - npm install
 2. Configure environment (optional)
    - Copy `.env.example` to `.env` and adjust values.
@@ -17,21 +17,22 @@ React application for managing network devices. It communicates with the backend
 
 - REACT_APP_API_BASE_URL
   - Default: http://localhost:5000/api
-  - Description: Base URL for backend API.
+  - Description: Base URL for backend API (FRONTEND_API_BASE in requirements).
 - REACT_APP_STATUS_MONITORING_ENABLED
   - Default: true
-  - Description: When false, status badges and ping actions are hidden/disabled.
+  - Description: When false, status badges and ping actions are hidden/disabled (STATUS_MONITORING_ENABLED in requirements).
 
 See `.env.example` for a template.
 
 ## Features
 
 - Device dashboard listing with filtering, sorting, search, and pagination.
-- Add/edit/delete devices with accessible, validated forms.
-- Optional device details page with last ping time and status.
+- Add/edit/delete devices with accessible, validated forms and duplicate-prevention guidance.
+- Device details page with last ping time and status.
 - Manual ping action with global toast notifications.
-- Global error handling with accessible alerts.
+- Global error handling with accessible alerts and focus management.
 - Responsive layout and keyboard-accessible controls.
+- Configurable status monitoring feature toggle.
 
 ## API Endpoints Used
 
@@ -40,6 +41,7 @@ See `.env.example` for a template.
 - GET /devices/{id}
 - PUT /devices/{id}
 - DELETE /devices/{id}
+- GET /status
 - POST /ping
 
 Error responses are handled according to the `Error` schema in the OpenAPI spec (error_code, message, details).
@@ -55,4 +57,4 @@ Error responses are handled according to the `Error` schema in the OpenAPI spec 
 - Routing is implemented using a minimal hash-based router to avoid extra dependencies. URLs:
   - #/ -> list
   - #/devices/{id} -> details
-
+- The UI gracefully handles when the backend is not reachable by showing accessible error alerts and allowing retries.

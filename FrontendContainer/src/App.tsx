@@ -8,6 +8,40 @@ import { useToast } from "./hooks/useToast.ts";
 import { useHashRouter } from "./routes.tsx";
 
 /**
+ * Simple global error boundary to prevent full app crash and provide accessible alert.
+ */
+class ErrorBoundary extends React.Component<any, { hasError: boolean; message?: string }> {
+  constructor(props: any) {
+    super(props);
+    this.state = { hasError: false, message: undefined };
+  }
+  static getDerivedStateFromError(error: any) {
+    return { hasError: true, message: error?.message || "Unexpected error occurred" };
+  }
+  componentDidCatch(error: any, info: any) {
+    // eslint-disable-next-line no-console
+    console.error("UI ErrorBoundary caught:", error, info);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="container">
+          <div className="panel">
+            <div className="alert" role="alert">
+              {this.state.message}
+            </div>
+            <button className="btn" onClick={() => this.setState({ hasError: false, message: undefined })}>
+              Dismiss
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+/**
  * PUBLIC_INTERFACE
  * App
  * Main application component with navigation and routing.
@@ -15,22 +49,30 @@ import { useHashRouter } from "./routes.tsx";
 export default function App() {
   const { addToast, removeToast, toasts } = useToast();
   const router = useHashRouter();
+  const mainRef = React.useRef<HTMLElement | null>(null);
+
+  // focus main on route changes for accessibility
+  React.useEffect(() => {
+    if (mainRef.current) {
+      mainRef.current.focus();
+    }
+  }, [router.path]);
 
   // state for modal form
   const [formOpen, setFormOpen] = React.useState(false);
-  const [editing, setEditing] = React.useState(null);
+  const [editing, setEditing] = React.useState<any>(null);
 
   function goHome() { router.navigate("/"); }
 
   function openAdd() { setEditing(null); setFormOpen(true); }
-  function openEdit(device) { setEditing(device); setFormOpen(true); }
+  function openEdit(device: any) { setEditing(device); setFormOpen(true); }
   function onFormSuccess() { setFormOpen(false); /* table will refetch by props change trigger if needed */ }
 
   const isDetails = router.segments[0] === "devices" && router.segments[1];
   const detailsId = isDetails ? router.segments[1] : null;
 
   return (
-    <>
+    <ErrorBoundary>
       <nav className="navbar" role="navigation" aria-label="Main">
         <h1>Network Devices</h1>
         <div>
@@ -38,7 +80,7 @@ export default function App() {
         </div>
       </nav>
 
-      <main className="container">
+      <main className="container" tabIndex={-1} ref={mainRef} aria-live="polite">
         {!isDetails && (
           <DeviceTable
             onAdd={openAdd}
@@ -81,6 +123,6 @@ export default function App() {
       </main>
 
       <ToastContainer toasts={toasts} remove={removeToast} />
-    </>
+    </ErrorBoundary>
   );
 }
