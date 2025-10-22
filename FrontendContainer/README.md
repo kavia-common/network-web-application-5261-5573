@@ -1,82 +1,58 @@
-# Lightweight React Template for KAVIA
+# Network Device Management - Frontend
 
-This project provides a minimal React template with a clean, modern UI and minimal dependencies.
+React application for managing network devices. It communicates with the backend API defined at http://localhost:5000/api.
+
+## Quick Start
+
+1. Install dependencies
+   - In this template we use Create React App (CRA). From this folder:
+     - npm install
+2. Configure environment (optional)
+   - Copy `.env.example` to `.env` and adjust values.
+3. Start the app
+   - npm start
+   - Open http://localhost:3000
+
+## Environment Variables
+
+- REACT_APP_API_BASE_URL
+  - Default: http://localhost:5000/api
+  - Description: Base URL for backend API.
+- REACT_APP_STATUS_MONITORING_ENABLED
+  - Default: true
+  - Description: When false, status badges and ping actions are hidden/disabled.
+
+See `.env.example` for a template.
 
 ## Features
 
-- **Lightweight**: No heavy UI frameworks - uses only vanilla CSS and React
-- **Modern UI**: Clean, responsive design with KAVIA brand styling
-- **Fast**: Minimal dependencies for quick loading times
-- **Simple**: Easy to understand and modify
+- Device dashboard listing with filtering, sorting, search, and pagination.
+- Add/edit/delete devices with accessible, validated forms.
+- Optional device details page with last ping time and status.
+- Manual ping action with global toast notifications.
+- Global error handling with accessible alerts.
+- Responsive layout and keyboard-accessible controls.
 
-## Getting Started
+## API Endpoints Used
 
-In the project directory, you can run:
+- GET /devices?filter=&sort=&page=&page_size=
+- POST /devices
+- GET /devices/{id}
+- PUT /devices/{id}
+- DELETE /devices/{id}
+- POST /ping
 
-### `npm start`
+Error responses are handled according to the `Error` schema in the OpenAPI spec (error_code, message, details).
 
-Runs the app in development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Accessibility
 
-### `npm test`
+- Semantic roles, labels, and aria attributes.
+- Keyboard focus and navigation supported.
+- Non-blocking UI with live region toasts.
 
-Launches the test runner in interactive watch mode.
+## Notes
 
-### `npm run build`
+- Routing is implemented using a minimal hash-based router to avoid extra dependencies. URLs:
+  - #/ -> list
+  - #/devices/{id} -> details
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-## Customization
-
-### Colors
-
-The main brand colors are defined as CSS variables in `src/App.css`:
-
-```css
-:root {
-  --kavia-orange: #E87A41;
-  --kavia-dark: #1A1A1A;
-  --text-color: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --border-color: rgba(255, 255, 255, 0.1);
-}
-```
-
-### Components
-
-This template uses pure HTML/CSS components instead of a UI framework. You can find component styles in `src/App.css`. 
-
-Common components include:
-- Buttons (`.btn`, `.btn-large`)
-- Container (`.container`)
-- Navigation (`.navbar`)
-- Typography (`.title`, `.subtitle`, `.description`)
-
-## Learn More
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
