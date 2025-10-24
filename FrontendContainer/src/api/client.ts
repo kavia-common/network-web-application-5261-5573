@@ -1,4 +1,4 @@
-const DEFAULT_BASE = "http://localhost:3001/api";
+const DEFAULT_BASE = "https://vscode-internal-23446-beta.beta01.cloud.kavia.ai:3001/api";
 
 function getEnv(name, fallback) {
   // CRA exposes variables prefixed with REACT_APP_
