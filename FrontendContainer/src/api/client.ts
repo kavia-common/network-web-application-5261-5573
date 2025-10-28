@@ -1,4 +1,4 @@
-const DEFAULT_BASE = "https://kavia-alb-a1782a0a-980038954.backend.kavia.app";
+const DEFAULT_BASE = "https://kavia-alb-e32aca36-1485688174.backend.kavia.app/";
 
 function getEnv(name, fallback) {
   // CRA exposes variables prefixed with REACT_APP_
