@@ -16,7 +16,7 @@ export default function DeviceForm({ initialValues, onSuccess, onCancel, addToas
     ip_address: initialValues?.ip_address || "",
     type: initialValues?.type || "router",
     location: initialValues?.location || "",
-    status: initialValues?.status || "online"
+    status: "online"
   }));
   const [errors, setErrors] = React.useState({});
   const [submitting, setSubmitting] = React.useState(false);
@@ -137,24 +137,6 @@ export default function DeviceForm({ initialValues, onSuccess, onCancel, addToas
         />
         {errors.location && <div id="e-location" className="form-error" role="alert">{errors.location}</div>}
       </div>
-
-        <div className="form-field">
-        <label htmlFor="f-type">Status <span className="sr-only">(required)</span></label>
-        <select
-          id="f-type"
-          className="select"
-          value={values.status}
-          onChange={(e) => setField("type", e.target.value)}
-          required
-          aria-invalid={!!errors.status}
-          aria-describedby={errors.status ? "e-type" : undefined}
-        >
-          <option value="online">Online</option>
-          <option value="offline">Offline</option>
-        </select>
-        {errors.status && <div id="e-type" className="form-error" role="alert">{errors.status}</div>}
-      </div>
-      
 
       {!STATUS_MONITORING_ENABLED && (
         <div className="alert" role="status">
