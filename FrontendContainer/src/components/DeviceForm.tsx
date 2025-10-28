@@ -16,7 +16,7 @@ export default function DeviceForm({ initialValues, onSuccess, onCancel, addToas
     ip_address: initialValues?.ip_address || "",
     type: initialValues?.type || "router",
     location: initialValues?.location || "",
-    status: initialValues?.status || ""
+    status: initialValues?.status || "online"
   }));
   const [errors, setErrors] = React.useState({});
   const [submitting, setSubmitting] = React.useState(false);
