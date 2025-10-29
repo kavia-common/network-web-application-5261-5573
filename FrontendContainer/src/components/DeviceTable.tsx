@@ -41,13 +41,13 @@ export default function DeviceTable({ onAdd, onEdit, onView, addToast }) {
       console.log(resp)
       setDevices(resp.devices || []);
       setTotal(resp.total || 0);
+      console.log(devices);
     } catch (err) {
       setError(err?.message || "Failed to load devices.");
     } finally {
       setLoading(false);
     }
   }
-
   React.useEffect(() => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -158,12 +158,15 @@ export default function DeviceTable({ onAdd, onEdit, onView, addToast }) {
           </thead>
           <tbody>
             {loading && (
+              {console.log("devices1")}
               <tr><td colSpan={6}>Loading…</td></tr>
             )}
             {!loading && devices.length === 0 && (
+              {console.log(devices)}
               <tr><td colSpan={6}>No devices found.</td></tr>
             )}
             {!loading && devices.map((d) => (
+              {console.log(devices)}
               <tr key={d.id}>
                 <td><button className="btn" onClick={() => onView?.(d)} aria-label={`View ${d.name}`}>{d.name}</button></td>
                 <td>{d.ip_address}</td>
