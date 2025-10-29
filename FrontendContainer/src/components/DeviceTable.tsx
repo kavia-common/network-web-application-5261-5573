@@ -38,10 +38,8 @@ export default function DeviceTable({ onAdd, onEdit, onView, addToast }) {
     setError(null);
     try {
       const resp = await listDevices({ filter: combinedFilter, sort, page, page_size: pageSize });
-      console.log(resp)
       setDevices(resp || []);
       setTotal(resp.total || 0);
-      console.log(devices);
     } catch (err) {
       setError(err?.message || "Failed to load devices.");
     } finally {
