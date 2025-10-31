@@ -4,6 +4,7 @@ import { apiFetch } from "./client.ts";
  * PUBLIC_INTERFACE
  * listDevices
  * Fetch devices with optional filter, sort, page, page_size.
+ * Note: Backend may return either an array of devices or an object with pagination fields.
  */
 export function listDevices({ filter = "", sort = "", page = 1, page_size = 10 } = {}) {
   const params = new URLSearchParams();
@@ -40,6 +41,7 @@ export function getDevice(id) {
  * PUBLIC_INTERFACE
  * updateDevice
  * PUT /devices/{id}
+ * Ensures updates use PUT as required by the API spec.
  */
 export function updateDevice(id, payload) {
   return apiFetch(`/devices/${encodeURIComponent(id)}`, {

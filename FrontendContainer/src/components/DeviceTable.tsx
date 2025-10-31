@@ -33,19 +33,29 @@ export default function DeviceTable({ onAdd, onEdit, onView, addToast }) {
     return chunks.join(" ");
   }, [typeFilter, statusFilter, search]);
 
+  // Fetch data from API and normalize shape
   async function fetchData() {
     setLoading(true);
     setError(null);
     try {
       const resp = await listDevices({ filter: combinedFilter, sort, page, page_size: pageSize });
-      setDevices(resp || []);
-      setTotal(resp.total || 0);
+      // Handle two possible response shapes:
+      // - Array of devices
+      // - Object with { devices, total, page, page_size }
+      const items = Array.isArray(resp) ? resp : Array.isArray(resp?.devices) ? resp.devices : [];
+      const totalCount = typeof resp?.total === "number" ? resp.total : items.length;
+
+      setDevices(items);
+      setTotal(totalCount);
     } catch (err) {
       setError(err?.message || "Failed to load devices.");
+      setDevices([]);
+      setTotal(0);
     } finally {
       setLoading(false);
     }
   }
+
   React.useEffect(() => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -60,13 +70,23 @@ export default function DeviceTable({ onAdd, onEdit, onView, addToast }) {
   }
 
   function onDelete(device) {
+    // Ensure we have a valid id before opening dialog
+    if (!device || !device.id) {
+      addToast?.("Unable to delete: invalid device id.", "error");
+      return;
+    }
     setConfirmDelete({ open: true, device });
   }
 
   async function confirmDeleteAction() {
     const dev = confirmDelete.device;
-    if (!dev) return;
+    if (!dev || !dev.id) {
+      addToast?.("Delete failed: missing device id.", "error");
+      setConfirmDelete({ open: false, device: null });
+      return;
+    }
     try {
+      // Always pass the proper id to DELETE /devices/{id}
       await deleteDeviceApi(dev.id);
       addToast?.("Device deleted.", "success");
       // refresh current page
@@ -80,6 +100,10 @@ export default function DeviceTable({ onAdd, onEdit, onView, addToast }) {
 
   async function onPing(device) {
     if (!STATUS_MONITORING_ENABLED) return;
+    if (!device?.id) {
+      addToast?.("Cannot ping: missing device id.", "error");
+      return;
+    }
     setPingingId(device.id);
     try {
       const res = await pingDevice(device.id);
@@ -94,6 +118,19 @@ export default function DeviceTable({ onAdd, onEdit, onView, addToast }) {
     }
   }
 
+  // Client-side search fallback: if backend does not filter "q:", we ensure search narrows rows.
+  const visibleDevices = React.useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return devices;
+    return devices.filter((d) => {
+      const name = (d.name || "").toLowerCase();
+      const ip = (d.ip_address || "").toLowerCase();
+      const type = (d.type || "").toLowerCase();
+      const location = (d.location || "").toLowerCase();
+      return name.includes(q) || ip.includes(q) || type.includes(q) || location.includes(q);
+    });
+  }, [devices, search]);
+
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
   return (
@@ -102,7 +139,7 @@ export default function DeviceTable({ onAdd, onEdit, onView, addToast }) {
         <input
           className="input"
           type="search"
-          placeholder="Search name or location…"
+          placeholder="Search name, IP, type or location…"
           value={search}
           onChange={(e) => { setSearch(e.target.value); setPage(1); }}
           aria-label="Search devices"
@@ -158,10 +195,10 @@ export default function DeviceTable({ onAdd, onEdit, onView, addToast }) {
             {loading && (
               <tr><td colSpan={6}>Loading…</td></tr>
             )}
-            {!loading && devices.length === 0 && (
+            {!loading && visibleDevices.length === 0 && (
               <tr><td colSpan={6}>No devices found.</td></tr>
             )}
-            {!loading && devices.map((d) => (
+            {!loading && visibleDevices.map((d) => (
               <tr key={d.id}>
                 <td><button className="btn" onClick={() => onView?.(d)} aria-label={`View ${d.name}`}>{d.name}</button></td>
                 <td>{d.ip_address}</td>

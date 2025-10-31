@@ -8,6 +8,7 @@ const IPV4_REGEX = /^(?:(25[0-5]|2[0-4]\d|[01]?\d?\d)(\.|$)){4}$/;
  * PUBLIC_INTERFACE
  * DeviceForm
  * Form for creating or editing devices with client-side validation.
+ * When initialValues contains an id, the form performs a PUT /devices/{id} update.
  */
 export default function DeviceForm({ initialValues, onSuccess, onCancel, addToast }) {
   const isEdit = !!(initialValues && initialValues.id);
