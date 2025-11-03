@@ -1,15 +1,31 @@
-const DEFAULT_BASE = "https://kavia-alb-957a84d4-275036482.backend.kavia.app/";
+const DEFAULT_BASE = "https://kavia-alb-465de3b7-2042056739.backend.kavia.app/";
 
+/**
+ * Read environment variable with a fallback.
+ * CRA exposes variables prefixed with REACT_APP_. We standardize on REACT_APP_API_BASE_URL.
+ */
 function getEnv(name, fallback) {
-  // CRA exposes variables prefixed with REACT_APP_
   if (typeof process !== "undefined" && process.env && process.env[name]) {
     return process.env[name];
   }
   return fallback;
 }
 
+/**
+ * PUBLIC_INTERFACE
+ * API_BASE_URL
+ * Single source of truth for backend base URL.
+ * Reads from REACT_APP_API_BASE_URL with a fallback to the provided default.
+ */
 export const API_BASE_URL = getEnv("REACT_APP_API_BASE_URL", DEFAULT_BASE);
-export const STATUS_MONITORING_ENABLED = String(getEnv("REACT_APP_STATUS_MONITORING_ENABLED", "true")).toLowerCase() !== "false";
+
+/**
+ * PUBLIC_INTERFACE
+ * STATUS_MONITORING_ENABLED
+ * Feature flag to toggle status monitoring UI elements.
+ */
+export const STATUS_MONITORING_ENABLED =
+  String(getEnv("REACT_APP_STATUS_MONITORING_ENABLED", "true")).toLowerCase() !== "false";
 
 /**
  * PUBLIC_INTERFACE
