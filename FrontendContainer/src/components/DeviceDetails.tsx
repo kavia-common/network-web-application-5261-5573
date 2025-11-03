@@ -1,13 +1,13 @@
 import React from "react";
-import { getDevice, pingDevice } from "../api/devices.ts";
+import { getDeviceByName, pingDevice } from "../api/devices.ts";
 import { STATUS_MONITORING_ENABLED } from "../api/client.ts";
 
 /**
  * PUBLIC_INTERFACE
  * DeviceDetails
- * Displays details for a device id.
+ * Displays details for a device by name.
  */
-export default function DeviceDetails({ deviceId, onBack, addToast }) {
+export default function DeviceDetails({ deviceName, onBack, addToast }) {
   const [device, setDevice] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
   const [err, setErr] = React.useState(null);
@@ -17,7 +17,7 @@ export default function DeviceDetails({ deviceId, onBack, addToast }) {
     setLoading(true);
     setErr(null);
     try {
-      const data = await getDevice(deviceId);
+      const data = await getDeviceByName(deviceName);
       setDevice(data);
     } catch (e) {
       setErr(e?.message || "Failed to load device.");
@@ -26,13 +26,15 @@ export default function DeviceDetails({ deviceId, onBack, addToast }) {
     }
   }
 
-  React.useEffect(() => { load(); /* eslint-disable-next-line */ }, [deviceId]);
+  React.useEffect(() => { load(); /* eslint-disable-next-line */ }, [deviceName]);
 
   async function doPing() {
     if (!STATUS_MONITORING_ENABLED) return;
     setPinging(true);
     try {
-      const res = await pingDevice(deviceId);
+      // Keep ping by id unless backend changes; prefer device.id if available
+      const targetId = device?.id ?? deviceName;
+      const res = await pingDevice(targetId);
       addToast?.(`Ping ${res?.status || "unknown"}${res?.response_time_ms ? ` in ${res.response_time_ms}ms` : ""}`, "info");
       await load();
     } catch (e) {

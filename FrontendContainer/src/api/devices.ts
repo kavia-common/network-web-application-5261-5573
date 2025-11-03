@@ -30,21 +30,21 @@ export function createDevice(payload) {
 
 /**
  * PUBLIC_INTERFACE
- * getDevice
- * GET /devices/{id}
+ * getDeviceByName
+ * GET /devices/{name}
  */
-export function getDevice(id) {
-  return apiFetch(`/devices/${encodeURIComponent(id)}`, { method: "GET" });
+export function getDeviceByName(name) {
+  return apiFetch(`/devices/${encodeURIComponent(name)}`, { method: "GET" });
 }
 
 /**
  * PUBLIC_INTERFACE
- * updateDevice
- * PUT /devices/{id}
+ * updateDeviceByName
+ * PUT /devices/{name}
  * Ensures updates use PUT as required by the API spec.
  */
-export function updateDevice(id, payload) {
-  return apiFetch(`/devices/${encodeURIComponent(id)}`, {
+export function updateDeviceByName(name, payload) {
+  return apiFetch(`/devices/${encodeURIComponent(name)}`, {
     method: "PUT",
     body: JSON.stringify(payload),
   });
@@ -52,11 +52,11 @@ export function updateDevice(id, payload) {
 
 /**
  * PUBLIC_INTERFACE
- * deleteDevice
- * DELETE /devices/{id}
+ * deleteDeviceByName
+ * DELETE /devices/{name}
  */
-export function deleteDeviceApi(id) {
-  return apiFetch(`/devices/${encodeURIComponent(id)}`, { method: "DELETE" });
+export function deleteDeviceByName(name) {
+  return apiFetch(`/devices/${encodeURIComponent(name)}`, { method: "DELETE" });
 }
 
 /**
@@ -72,6 +72,7 @@ export function getStatuses() {
  * PUBLIC_INTERFACE
  * pingDevice
  * POST /ping
+ * Note: Ping remains using device_id unless the backend changes to name.
  */
 export function pingDevice(device_id) {
   return apiFetch(`/ping`, {

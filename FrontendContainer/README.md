@@ -38,9 +38,9 @@ See `.env.example` for a template.
 
 - GET /devices?filter=&sort=&page=&page_size=
 - POST /devices
-- GET /devices/{id}
-- PUT /devices/{id}
-- DELETE /devices/{id}
+- GET /devices/{name}
+- PUT /devices/{name}
+- DELETE /devices/{name}
 - GET /status
 - POST /ping
 

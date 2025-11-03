@@ -69,7 +69,7 @@ export default function App() {
   function onFormSuccess() { setFormOpen(false); /* table will refetch by props change trigger if needed */ }
 
   const isDetails = router.segments[0] === "devices" && router.segments[1];
-  const detailsId = isDetails ? router.segments[1] : null;
+  const detailsName = isDetails ? router.segments[1] : null;
 
   return (
     <ErrorBoundary>
@@ -85,14 +85,14 @@ export default function App() {
           <DeviceTable
             onAdd={openAdd}
             onEdit={openEdit}
-            onView={(d) => router.navigate(`/devices/${encodeURIComponent(d.id)}`)}
+            onView={(d) => router.navigate(`/devices/${encodeURIComponent(d.name)}`)}
             addToast={addToast}
           />
         )}
 
         {isDetails && (
           <DeviceDetails
-            deviceId={detailsId}
+            deviceName={detailsName}
             onBack={goHome}
             addToast={addToast}
           />

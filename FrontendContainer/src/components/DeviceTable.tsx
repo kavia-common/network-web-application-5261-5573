@@ -1,5 +1,5 @@
 import React from "react";
-import { listDevices, deleteDeviceApi, pingDevice } from "../api/devices.ts";
+import { listDevices, deleteDeviceByName, pingDevice } from "../api/devices.ts";
 import { STATUS_MONITORING_ENABLED } from "../api/client.ts";
 import ConfirmDialog from "./ConfirmDialog.tsx";
 
@@ -70,9 +70,9 @@ export default function DeviceTable({ onAdd, onEdit, onView, addToast }) {
   }
 
   function onDelete(device) {
-    // Ensure we have a valid id before opening dialog
-    if (!device || !device.id) {
-      addToast?.("Unable to delete: invalid device id.", "error");
+    // Ensure we have a valid name before opening dialog
+    if (!device || !device.name) {
+      addToast?.("Unable to delete: invalid device name.", "error");
       return;
     }
     setConfirmDelete({ open: true, device });
@@ -80,14 +80,14 @@ export default function DeviceTable({ onAdd, onEdit, onView, addToast }) {
 
   async function confirmDeleteAction() {
     const dev = confirmDelete.device;
-    if (!dev || !dev.id) {
-      addToast?.("Delete failed: missing device id.", "error");
+    if (!dev || !dev.name) {
+      addToast?.("Delete failed: missing device name.", "error");
       setConfirmDelete({ open: false, device: null });
       return;
     }
     try {
-      // Always pass the proper id to DELETE /devices/{id}
-      await deleteDeviceApi(dev.id);
+      // DELETE /devices/{name}
+      await deleteDeviceByName(dev.name);
       addToast?.("Device deleted.", "success");
       // refresh current page
       fetchData();

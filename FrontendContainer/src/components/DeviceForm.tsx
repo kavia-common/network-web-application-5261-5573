@@ -1,5 +1,5 @@
 import React from "react";
-import { createDevice, updateDevice } from "../api/devices.ts";
+import { createDevice, updateDeviceByName } from "../api/devices.ts";
 import { STATUS_MONITORING_ENABLED } from "../api/client.ts";
 
 const IPV4_REGEX = /^(?:(25[0-5]|2[0-4]\d|[01]?\d?\d)(\.|$)){4}$/;
@@ -11,7 +11,7 @@ const IPV4_REGEX = /^(?:(25[0-5]|2[0-4]\d|[01]?\d?\d)(\.|$)){4}$/;
  * When initialValues contains an id, the form performs a PUT /devices/{id} update.
  */
 export default function DeviceForm({ initialValues, onSuccess, onCancel, addToast }) {
-  const isEdit = !!(initialValues && initialValues.id);
+  const isEdit = !!(initialValues && (initialValues.name || initialValues.id));
   const [values, setValues] = React.useState(() => ({
     name: initialValues?.name || "",
     ip_address: initialValues?.ip_address || "",
@@ -43,7 +43,7 @@ export default function DeviceForm({ initialValues, onSuccess, onCancel, addToas
     setSubmitting(true);
     try {
       if (isEdit) {
-        const updated = await updateDevice(initialValues.id, values);
+        const updated = await updateDeviceByName(initialValues.name, values);
         addToast?.("Device updated.", "success");
         onSuccess?.(updated);
       } else {

@@ -1,7 +1,7 @@
 import React from "react";
 import DeviceForm from "../../components/DeviceForm.tsx";
 import { useToast } from "../../hooks/useToast.ts";
-import { getDevice } from "../../api/devices.ts";
+import { getDeviceByName } from "../../api/devices.ts";
 
 /**
  * PUBLIC_INTERFACE
@@ -10,7 +10,7 @@ import { getDevice } from "../../api/devices.ts";
  */
 export default function EditDevicePage() {
   const { addToast } = useToast();
-  const id = (window.location.hash.replace(/^#/, "") || "/").split("/").filter(Boolean)[1];
+  const name = (window.location.hash.replace(/^#/, "") || "/").split("/").filter(Boolean)[1];
   const [device, setDevice] = React.useState<any>(null);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [err, setErr] = React.useState<string | null>(null);
@@ -20,7 +20,7 @@ export default function EditDevicePage() {
       setLoading(true);
       setErr(null);
       try {
-        const d = await getDevice(id);
+        const d = await getDeviceByName(name);
         setDevice(d);
       } catch (e: any) {
         setErr(e?.message || "Failed to load device.");
@@ -29,7 +29,7 @@ export default function EditDevicePage() {
       }
     }
     load();
-  }, [id]);
+  }, [name]);
 
   if (loading) return <div className="panel">Loading…</div>;
   if (err) return <div className="panel"><div className="alert" role="alert">{err}</div></div>;
