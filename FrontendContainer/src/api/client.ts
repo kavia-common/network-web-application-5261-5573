@@ -12,12 +12,52 @@ function getEnv(name, fallback) {
 }
 
 /**
+ * Normalize a base URL by removing any trailing slash.
+ */
+function normalizeBase(base) {
+  if (!base) return "";
+  return String(base).replace(/\/+$/, "");
+}
+
+/**
+ * Ensure path starts with a single leading slash.
+ */
+function normalizePath(path) {
+  if (!path) return "/";
+  return `/${String(path).replace(/^\/+/, "")}`;
+}
+
+/**
+ * PUBLIC_INTERFACE
+ * joinUrl
+ * Robustly join base URL and path using the URL constructor,
+ * ensuring there is exactly one slash between them.
+ */
+export function joinUrl(base, path) {
+  const b = normalizeBase(base);
+  const p = normalizePath(path);
+  try {
+    // URL handles edge cases like query strings and absolute paths
+    return new URL(p, b).toString();
+  } catch {
+    // Fallback join if URL constructor fails for some reason
+    return `${b}${p}`;
+  }
+}
+
+/**
  * PUBLIC_INTERFACE
  * API_BASE_URL
  * Single source of truth for backend base URL.
  * Reads from REACT_APP_API_BASE_URL with a fallback to the provided default.
+ * Any trailing slash is trimmed to avoid double slashes on joins.
  */
-export const API_BASE_URL = getEnv("REACT_APP_API_BASE_URL", DEFAULT_BASE);
+export const API_BASE_URL = normalizeBase(getEnv("REACT_APP_API_BASE_URL", DEFAULT_BASE));
+
+/**
+ * Export a convenience BASE object when using the native URL API.
+ */
+export const BASE = API_BASE_URL;
 
 /**
  * PUBLIC_INTERFACE
@@ -31,9 +71,15 @@ export const STATUS_MONITORING_ENABLED =
  * PUBLIC_INTERFACE
  * apiFetch
  * Wrapper around fetch with JSON parsing, error mapping, and base URL.
+ * Always uses joinUrl to avoid double slashes and malformed URLs.
  */
 export async function apiFetch(path, options = {}) {
-  const url = path.startsWith("http") ? path : `${API_BASE_URL}${path}`;
+  const url = (() => {
+    const str = String(path || "");
+    if (str.startsWith("http://") || str.startsWith("https://")) return str;
+    return joinUrl(API_BASE_URL, str);
+  })();
+
   const headers = {
     "Content-Type": "application/json",
     ...(options.headers || {}),
