@@ -1,4 +1,4 @@
-const DEFAULT_BASE = "https://kavia-alb-465de3b7-2042056739.backend.kavia.app/";
+const DEFAULT_BASE = "https://kavia-alb-699c693e-2016998426.backend.kavia.app/";
 
 /**
  * Read environment variable with a fallback.

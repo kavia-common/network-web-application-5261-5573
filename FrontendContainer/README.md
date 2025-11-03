@@ -1,6 +1,6 @@
 # Network Device Management - Frontend
 
-React application for managing network devices. It communicates with the backend API defined at https://kavia-alb-465de3b7-2042056739.backend.kavia.app/.
+React application for managing network devices. It communicates with the backend API defined at https://kavia-alb-699c693e-2016998426.backend.kavia.app/.
 
 ## Quick Start
 
@@ -16,7 +16,7 @@ React application for managing network devices. It communicates with the backend
 ## Environment Variables
 
 - REACT_APP_API_BASE_URL
-  - Default: https://kavia-alb-465de3b7-2042056739.backend.kavia.app/
+  - Default: https://kavia-alb-699c693e-2016998426.backend.kavia.app/
   - Description: Base URL for backend API (FRONTEND_API_BASE in requirements).
 - REACT_APP_STATUS_MONITORING_ENABLED
   - Default: true
